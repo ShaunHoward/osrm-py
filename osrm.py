@@ -156,7 +156,8 @@ class RouteRequest(BaseRequest):
             alternatives=False,
             steps=False, annotations=False,
             geometries=geometries.geojson,
-            overview=overview.simplified, **kwargs):
+            overview=overview.simplified,
+            continue_straight=None, **kwargs):
         super().__init__(**kwargs)
 
         assert isinstance(alternatives, bool)
@@ -170,6 +171,7 @@ class RouteRequest(BaseRequest):
         self.annotations = annotations
         self.geometries = geometries
         self.overview = overview
+        self.continue_straight = continue_straight
 
     def get_options(self):
         options = super().get_options()
@@ -178,8 +180,10 @@ class RouteRequest(BaseRequest):
             'steps':        self._encode_bool(self.steps),
             'annotations':  self._encode_bool(self.annotations),
             'geometries':   self.geometries.value,
-            'overview':     self.overview.value
+            'overview':     self.overview.value,
         })
+        if self.continue_straight:
+            options.update({'continue_straight': self._encode_bool(self.continue_straight)})
         return options
 
 
