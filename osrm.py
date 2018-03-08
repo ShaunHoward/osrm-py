@@ -28,6 +28,9 @@ except ImportError:
 if not (aiohttp or requests):
     logger.error('Could not import none of modules \'aiohttp\' or \'requests\'')
 
+logging.getLogger("requests").setLevel(logging.WARNING)
+logging.getLogger("urllib3").setLevel(logging.WARNING)
+
 
 class overview(enum.Enum):
     simplified = 'simplified'
@@ -250,7 +253,7 @@ class BaseClient:
             for k, v in request.get_options().items()
             if v
         }
-        logger.debug('request url=%s; params=%s', url, params)
+        # logger.debug('request url=%s; params=%s', url, params)
         return (url, params)
 
 
@@ -335,9 +338,9 @@ class AioHTTPClient(BaseClient):
                         response.url, response.status, body)
             except asyncio.TimeoutError:
                 timeout = self.exp_backoff(attempt)
-                logger.info(
-                    'Timeout error url=%s (remaining tries %s, sleeping %.2f secs)',
-                    url, self.max_retries - attempt, timeout)
+                #logger.info(
+                #    'Timeout error url=%s (remaining tries %s, sleeping %.2f secs)',
+                #    url, self.max_retries - attempt, timeout)
                 await asyncio.sleep(timeout)
                 attempt += 1
 
