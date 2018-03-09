@@ -160,7 +160,7 @@ class RouteRequest(BaseRequest):
             steps=False, annotations=False,
             geometries=geometries.geojson,
             overview=overview.simplified,
-            continue_straight=None, **kwargs):
+            continue_straight=None, exclude=None, **kwargs):
         super().__init__(**kwargs)
 
         assert isinstance(alternatives, bool)
@@ -175,6 +175,7 @@ class RouteRequest(BaseRequest):
         self.geometries = geometries
         self.overview = overview
         self.continue_straight = continue_straight
+        self.exclude = exclude
 
     def get_options(self):
         options = super().get_options()
@@ -187,6 +188,8 @@ class RouteRequest(BaseRequest):
         })
         if self.continue_straight:
             options.update({'continue_straight': self._encode_bool(self.continue_straight)})
+        if self.exclude:
+            options.update({"exclude": self.exclude})
         return options
 
 
